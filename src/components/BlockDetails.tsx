@@ -1,7 +1,12 @@
-import BlockPreviewSVG from "./BlockPreviewSVG"; 
+import { useState } from "react";
+import BlockPreviewSVG from "./BlockPreviewSVG";
 
 const BlockDetails = ({ block }: { block: any }) => {
+  const [showControlPoints, setShowControlPoints] = useState(false);
+
   if (!block) return <p>Select a block to view its details.</p>;
+
+  const handleToggle = () => setShowControlPoints((prev) => !prev);
 
   return (
     <div className="p-4 bg-white rounded shadow">
@@ -10,7 +15,7 @@ const BlockDetails = ({ block }: { block: any }) => {
       <p><strong>Name:</strong> {block.name}</p>
       <p><strong>Type:</strong> {block.type}</p>
 
-      {block.coordinates?.length && (
+      {block.coordinates?.length > 0 && (
         <>
           <h3 className="mt-2 font-semibold">Coordinates:</h3>
           <ul className="ml-4 list-disc">
@@ -28,8 +33,20 @@ const BlockDetails = ({ block }: { block: any }) => {
             {Object.entries(block.properties).map(([key, val]) => (
               <li key={key}>
                 {key}:
-                {typeof val === "object" ? (
-                  <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(val, null, 2)}</pre>
+                {key === "controlPoints" ? (
+                  <>
+                    <button
+                      onClick={handleToggle}
+                      className="ml-2 text-blue-500 underline text-sm"
+                    >
+                      {showControlPoints ? "Hide" : "Show"} Control Points
+                    </button>
+                    {showControlPoints && (
+                      <pre className="bg-gray-100 p-2 rounded mt-1">
+                        {JSON.stringify(val, null, 2)}
+                      </pre>
+                    )}
+                  </>
                 ) : (
                   ` ${val}`
                 )}
@@ -39,17 +56,17 @@ const BlockDetails = ({ block }: { block: any }) => {
         </>
       )}
 
-     
-      {block.properties && (
+      {block.properties?.controlPoints && (
         <div className="mt-4">
           <h3 className="font-semibold mb-2">Visual Preview:</h3>
-         <BlockPreviewSVG
-  entities={
-    block.properties.controlPoints
-      ? [{ type: block.type, controlPoints: block.properties.controlPoints }]
-      : []
-  }
-/>
+          <BlockPreviewSVG
+            entities={[
+              {
+                type: block.type,
+                controlPoints: block.properties.controlPoints,
+              },
+            ]}
+          />
         </div>
       )}
     </div>

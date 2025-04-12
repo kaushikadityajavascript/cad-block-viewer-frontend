@@ -21,7 +21,7 @@ const [limit] = useState(10);
          params: {
         page,
         limit,
-        name: search,
+         ...(search && { name: search }), 
         showProperties: true,
       },
       });
@@ -37,7 +37,8 @@ const [limit] = useState(10);
   const handleSelectBlock = async (id: string) => {
     console.log("Clicked block ID:", id);
     if (isUploadView) {
-    const block = blocks.find((b) => b.id === id); // fallback for _id
+    const block = blocks.find((b) => b.id === id); 
+      console.log("🚀 ~ handleSelectBlock ~ block:", block.entities)
       if (block) {
        setSelectedBlock({ ...block });
     }
@@ -104,7 +105,20 @@ const [limit] = useState(10);
           setTotalPages(1);               // If you want to disable pagination
           setIsUploadView(true)
   }}
-/>
+      />
+      
+      {isUploadView && (
+  <button
+    onClick={() => {
+      setIsUploadView(false);
+      setSearch("");      
+      setSelectedBlock(null);
+    }}
+    className="mt-4 px-4 py-2 bg-gray-700 text-white rounded"
+  >
+    🔙 Back to All Blocks
+  </button>
+)}
 
       {/* Search field */}
       <input

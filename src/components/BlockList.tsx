@@ -3,9 +3,14 @@ interface Block {
   id: string;
   name: string;
   type: string;
+  properties?: {
+    layer?: string;
+    controlPoints?: { x: number; y: number }[];
+  };
 }
 
 const BlockList = ({ blocks, onSelect }: { blocks: Block[]; onSelect: (id: string) => void }) => {
+  
   if (!blocks.length) return <p>No blocks found.</p>;
 
   return (
